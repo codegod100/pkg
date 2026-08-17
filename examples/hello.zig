@@ -1,5 +1,6 @@
 const std = @import("std");
+const greeting = @import("greeting.zig");
 
 pub fn main() !void {
-    std.debug.print("hello from a Zig source build\n", .{});
+    std.debug.print("{s}\n", .{greeting.message()});
 }
