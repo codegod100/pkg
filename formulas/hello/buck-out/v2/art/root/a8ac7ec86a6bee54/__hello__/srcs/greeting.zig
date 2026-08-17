@@ -1,1 +1,0 @@
-../../__greeting__/out/greeting.zig
