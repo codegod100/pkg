@@ -41,7 +41,9 @@ buck2_build(Target0) ->
         Path -> Path
       end,
       ConfigArg = case Config of "" -> ""; _ -> " --config-file " ++ q(Config) end,
-      Command = "buck2 kill >/dev/null 2>&1 || true; mkdir -p buck-out/v2; buck2 build " ++ q(Target) ++ Mode ++ ConfigArg ++ " --show-output 2>&1",
+      KeyFile = filename:join([Home, ".config", "pkg", "buildbuddy-api-key"]),
+      KeyArg = case filelib:is_file(KeyFile) of true -> "export BUILDBUDDY_API_KEY=$(cat " ++ q(KeyFile) ++ "); "; false -> "" end,
+      Command = KeyArg ++ "buck2 kill >/dev/null 2>&1 || true; mkdir -p buck-out/v2; buck2 build " ++ q(Target) ++ Mode ++ ConfigArg ++ " --show-output 2>&1",
       Output = os:cmd(Command),
       case string:find(Output, "BUILD SUCCEEDED") of
         nomatch -> {error, unicode:characters_to_binary(Output)};
