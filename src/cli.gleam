@@ -109,7 +109,9 @@ fn install(name: String) {
             [formula.Buck2(target), ..] ->
               case item.binaries {
                 [binary, ..] ->
-                  case buck2.install(target, item.name, item.version, binary) {
+                  case
+                    buck2.install(".", target, item.name, item.version, binary)
+                  {
                     Ok(path) ->
                       io.println("Installed " <> item.name <> " to " <> path)
                     Error(buck2.Failed(message)) ->
