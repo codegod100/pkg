@@ -22,7 +22,7 @@ formula only after validating that it exists.
 ## Buck2 remote execution
 
 Formulae using `formula.Buck2` use Buck2's native remote execution flags. Set
-`PKG_BUCK2_REMOTE=prefer` to prefer remote execution, or `only` to require it:
+`PKG_BUCK2_REMOTE=prefer` to prefer remote execution, `only` to require it, or `local` to disable it. Remote preference is the default:
 
 ```bash
 PKG_BUCK2_REMOTE=prefer pixi run ./pkg install bat
@@ -30,4 +30,4 @@ PKG_BUCK2_REMOTE=only pixi run ./pkg install bat
 ```
 
 Remote execution/cache endpoints and credentials remain Buck2 configuration;
-`pkg` does not depend on BuildBuddy.
+BuildBuddy is the configured remote execution and cache service for this project. The Buck2 BuildBuddy endpoint and credentials must be configured in Buck2's remote execution settings; `pkg` forwards the execution mode but never handles credentials.

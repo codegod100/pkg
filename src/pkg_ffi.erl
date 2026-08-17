@@ -30,7 +30,8 @@ buck2_build(Target0) ->
       Mode = case os:getenv("PKG_BUCK2_REMOTE") of
         "only" -> " --remote-only";
         "prefer" -> " --prefer-remote";
-        _ -> ""
+        "local" -> "";
+        _ -> " --prefer-remote"
       end,
       Command = "buck2 build " ++ q(Target) ++ Mode ++ " --show-output 2>&1",
       Output = os:cmd(Command),
