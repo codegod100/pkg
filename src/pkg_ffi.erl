@@ -51,41 +51,25 @@ buck2_build(Target0) ->
   end.
 
 
-buck2_install(Target0, Name0, Version0, Binary0) ->
-  Target = unicode:characters_to_list(Target0), Name = unicode:characters_to_list(Name0),
-  Version = unicode:characters_to_list(Version0), Binary = unicode:characters_to_list(Binary0),
+buck2_install(Workspace0, Target0, Name0, Version0, Binary0) ->
+  Workspace = unicode:characters_to_list(Workspace0), Target = unicode:characters_to_list(Target0),
+  Name = unicode:characters_to_list(Name0), Version = unicode:characters_to_list(Version0), Binary = unicode:characters_to_list(Binary0),
   Home = case os:getenv("HOME") of false -> "."; Value -> Value end,
-  Root = filename:join([Home, ".local", "share", "pkg"]),
-  Cellar = filename:join([Root, "Cellar", Name, Version]),
-  Bin = filename:join([Home, ".local", "bin"]),
-  Cmd = "buck2 kill >/dev/null 2>&1 || true; mkdir -p buck-out/v2; buck2 build " ++ q(Target) ++ " --show-output 2>&1",
+  Root = filename:join([Home, ".local", "share", "pkg"]), Cellar = filename:join([Root, "Cellar", Name, Version]), Bin = filename:join([Home, ".local", "bin"]),
+  AbsWorkspace = filename:absname(Workspace),
+  Cmd = "cd " ++ q(AbsWorkspace) ++ " && buck2 kill >/dev/null 2>&1 || true; cd " ++ q(AbsWorkspace) ++ " && buck2 build " ++ q(Target) ++ " --show-output 2>&1",
   Output = os:cmd(Cmd),
   case string:find(Output, "BUILD SUCCEEDED") of
     nomatch -> {error, unicode:characters_to_binary(Output)};
     _ ->
-      Lines = string:lexemes(Output, "\n"),
-      Paths = [P || L <- Lines, P <- output_path(L), filelib:is_file(P)],
+      Lines = string:lexemes(Output, "\n"), Paths = [P || L <- Lines, P <- output_path(L), filelib:is_file(filename:join(AbsWorkspace, P))],
       case Paths of
-        [Source|_] ->
-          Destination = filename:join([Cellar, "bin", Binary]),
-          ok = filelib:ensure_dir(filename:join(filename:dirname(Destination), "x")),
-          ok = file:del_dir_r(filename:join([Cellar, "bin"])),
-          ok = filelib:ensure_dir(filename:join(filename:dirname(Destination), "x")),
-          case file:copy(Source, Destination) of
-            {ok, _} -> ok = file:change_mode(Destination, 8#755), ok = filelib:ensure_dir(filename:join(Bin, "x")),
-              _ = file:make_symlink(Destination, filename:join(Bin, Binary)),
-              {ok, unicode:characters_to_binary(filename:join(Bin, Binary))};
-            {error, Reason} -> {error, unicode:characters_to_binary(io_lib:format("~p", [Reason]))}
-          end;
+        [Source0|_] -> Source = filename:join(AbsWorkspace, Source0), Destination = filename:join([Cellar, "bin", Binary]),
+          ok = filelib:ensure_dir(filename:join(Destination, "x")), _ = file:delete(Destination),
+          {ok, _} = file:copy(Source, Destination), ok = file:change_mode(Destination, 8#755), ok = filelib:ensure_dir(filename:join(Bin, "x")),
+          _ = file:delete(filename:join(Bin, Binary)), ok = file:make_symlink(Destination, filename:join(Bin, Binary)),
+          {ok, unicode:characters_to_binary(filename:join(Bin, Binary))};
         [] -> {error, <<"Buck2 succeeded but no output artifact was found">>}
       end
   end.
-output_path(Line) ->
-  case string:split(Line, " ", all) of
-    [_, Path] -> [Path];
-    _ -> []
-  end.
-
-
-find_config([]) -> "";
-find_config([Path|Rest]) -> case filelib:is_file(Path) of true -> Path; false -> find_config(Rest) end.
+output_path(Line) -> case string:split(Line, " ", all) of [_, Path] -> [Path]; _ -> [] end.
