@@ -27,7 +27,12 @@ buck2_build(Target0) ->
   case os:find_executable("buck2") of
     false -> {error, "buck2 was not found on PATH"};
     _ ->
-      Command = "buck2 kill >/dev/null 2>&1 || true; buck2 build " ++ q(Target) ++ " --show-output 2>&1",
+      Mode = case os:getenv("PKG_BUCK2_REMOTE") of
+        "only" -> " --remote-only";
+        "prefer" -> " --prefer-remote";
+        _ -> ""
+      end,
+      Command = "buck2 build " ++ q(Target) ++ Mode ++ " --show-output 2>&1",
       Output = os:cmd(Command),
       case string:find(Output, "BUILD SUCCEEDED") of
         nomatch -> {error, unicode:characters_to_binary(Output)};
