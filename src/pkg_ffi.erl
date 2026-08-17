@@ -33,7 +33,7 @@ buck2_build(Target0) ->
         "local" -> "";
         _ -> " --prefer-remote"
       end,
-      Command = "buck2 build " ++ q(Target) ++ Mode ++ " --show-output 2>&1",
+      Command = "buck2 kill >/dev/null 2>&1 || true; mkdir -p buck-out/v2; buck2 build " ++ q(Target) ++ Mode ++ " --show-output 2>&1",
       Output = os:cmd(Command),
       case string:find(Output, "BUILD SUCCEEDED") of
         nomatch -> {error, unicode:characters_to_binary(Output)};
