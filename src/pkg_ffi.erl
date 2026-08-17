@@ -33,7 +33,12 @@ buck2_build(Target0) ->
         "local" -> "";
         _ -> " --prefer-remote"
       end,
-      Command = "buck2 kill >/dev/null 2>&1 || true; mkdir -p buck-out/v2; buck2 build " ++ q(Target) ++ Mode ++ " --show-output 2>&1",
+      Config = case os:getenv("PKG_BUCK2_CONFIG") of
+        false -> filename:join([case os:getenv("HOME") of false -> "."; H -> H end, ".config", "pkg", "buck2.config"]);
+        Path -> Path
+      end,
+      ConfigArg = case filelib:is_file(Config) of true -> " --config-file " ++ q(Config); false -> "" end,
+      Command = "buck2 kill >/dev/null 2>&1 || true; mkdir -p buck-out/v2; buck2 build " ++ q(Target) ++ Mode ++ ConfigArg ++ " --show-output 2>&1",
       Output = os:cmd(Command),
       case string:find(Output, "BUILD SUCCEEDED") of
         nomatch -> {error, unicode:characters_to_binary(Output)};

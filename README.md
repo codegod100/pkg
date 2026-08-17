@@ -31,3 +31,9 @@ PKG_BUCK2_REMOTE=only pixi run ./pkg install bat
 
 Remote execution/cache endpoints and credentials remain Buck2 configuration;
 BuildBuddy is the configured remote execution and cache service for this project. The Buck2 BuildBuddy endpoint and credentials must be configured in Buck2's remote execution settings; `pkg` forwards the execution mode but never handles credentials.
+
+
+### Global Buck2 configuration
+
+Set `PKG_BUCK2_CONFIG` to a user-level Buck2 config file. If unset, pkg looks for:
+`~/.config/pkg/buck2.config`. Keep BuildBuddy credentials out of the repository.
