@@ -1,1 +1,0 @@
-../../formulas/ripgrep/formula.gleam

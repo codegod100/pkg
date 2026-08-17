@@ -1,1 +1,0 @@
-../../formulas/jq/formula.gleam
