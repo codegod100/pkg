@@ -65,7 +65,7 @@ buck2_install(Workspace0, Target0, Name0, Version0, Binary0) ->
       Lines = string:lexemes(Output, "\n"), Paths = [P || L <- Lines, P <- output_path(L), filelib:is_file(filename:join(AbsWorkspace, P))],
       case Paths of
         [Source0|_] -> Source = filename:join(AbsWorkspace, Source0), Destination = filename:join([Cellar, "bin", Binary]),
-          ok = filelib:ensure_dir(filename:join(Destination, "x")), _ = file:del_dir_r(Destination),
+          _ = filelib:ensure_dir(filename:join(filename:dirname(Destination), "x")), _ = file:delete(Destination), _ = file:del_dir_r(Destination),
           {ok, _} = file:copy(Source, Destination), ok = file:change_mode(Destination, 8#755), ok = filelib:ensure_dir(filename:join(Bin, "x")),
           Link = filename:join(Bin, Binary), _ = file:delete(Link), _ = file:del_dir_r(Link),
           case file:make_symlink(Destination, Link) of
