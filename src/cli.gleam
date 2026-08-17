@@ -83,7 +83,8 @@ fn install(name: String) {
               }
             [] -> io.println("error: formula declares no binaries")
           }
-        formula.FromSource(_, _) -> build_formula(item.build)
+        formula.FromSource(_, _) ->
+          io.println("error: source formula requires Buck2 build step")
       }
     Error(_) -> io.println("error: formula not found: " <> name)
   }
