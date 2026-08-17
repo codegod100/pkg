@@ -31,7 +31,6 @@ buck2_build(Target0) ->
         "only" -> " --remote-only";
         "prefer" -> " --prefer-remote";
         "local" -> "";
-        "prefer" -> " --prefer-remote";
         _ -> " --remote-only"
       end,
       Home = case os:getenv("HOME") of false -> "."; H -> H end,
