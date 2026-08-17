@@ -37,3 +37,12 @@ BuildBuddy is the configured remote execution and cache service for this project
 
 Set `PKG_BUCK2_CONFIG` to a user-level Buck2 config file. If unset, pkg looks for:
 `~/.config/pkg/buck2.config`. Keep BuildBuddy credentials out of the repository.
+
+
+### Remote builds
+
+All Buck2 formula builds are remote-only by default (`PKG_BUCK2_REMOTE=only`).
+Buck2 discovers the configured remote executor/cache from the local system or
+user config. `pkg` checks `PKG_BUCK2_CONFIG`, then `~/.config/pkg/buck2.config`,
+`~/.config/buck2/buck2.config`, and `~/.buckconfig`. Use
+`PKG_BUCK2_REMOTE=prefer` for fallback-to-local or `local` for local builds.

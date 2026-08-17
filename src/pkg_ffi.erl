@@ -31,13 +31,16 @@ buck2_build(Target0) ->
         "only" -> " --remote-only";
         "prefer" -> " --prefer-remote";
         "local" -> "";
-        _ -> " --prefer-remote"
+        "prefer" -> " --prefer-remote";
+        _ -> " --remote-only"
       end,
+      Home = case os:getenv("HOME") of false -> "."; H -> H end,
       Config = case os:getenv("PKG_BUCK2_CONFIG") of
-        false -> filename:join([case os:getenv("HOME") of false -> "."; H -> H end, ".config", "pkg", "buck2.config"]);
+        {error, _} -> "";
+        false -> find_config([filename:join([Home, ".config", "pkg", "buck2.config"]), filename:join([Home, ".config", "buck2", "buck2.config"]), filename:join(Home, ".buckconfig")]);
         Path -> Path
       end,
-      ConfigArg = case filelib:is_file(Config) of true -> " --config-file " ++ q(Config); false -> "" end,
+      ConfigArg = case Config of "" -> ""; _ -> " --config-file " ++ q(Config) end,
       Command = "buck2 kill >/dev/null 2>&1 || true; mkdir -p buck-out/v2; buck2 build " ++ q(Target) ++ Mode ++ ConfigArg ++ " --show-output 2>&1",
       Output = os:cmd(Command),
       case string:find(Output, "BUILD SUCCEEDED") of
@@ -81,3 +84,7 @@ output_path(Line) ->
     [_, Path] -> [Path];
     _ -> []
   end.
+
+
+find_config([]) -> "";
+find_config([Path|Rest]) -> case filelib:is_file(Path) of true -> Path; false -> find_config(Rest) end.
