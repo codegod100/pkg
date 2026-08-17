@@ -12,7 +12,7 @@ install(Url0, Checksum0, Name0, Version0, Binary0) ->
   Target = filename:join([Cellar, "bin", Binary]),
   Cmd = "curl --fail --location --silent --show-error --proto '=https' --tlsv1.2 -o " ++ q(Tmp) ++ " " ++ q(Url) ++
         " && test \"$(sha256sum " ++ q(Tmp) ++ " | awk '{print $1}')\" = " ++ q(Checksum) ++
-        " && tar -xzf " ++ q(Tmp) ++ " -C " ++ q(Cellar) ++ " --strip-components=1 && mkdir -p " ++ q(filename:dirname(Target)) ++
+        " && rm -f " ++ q(Target) ++ " && tar -xzf " ++ q(Tmp) ++ " -C " ++ q(Cellar) ++ " --strip-components=1 && mkdir -p " ++ q(filename:dirname(Target)) ++
         " && Found=$(find " ++ q(Cellar) ++ " -type f -name " ++ q(Binary) ++ " -print -quit) && test -n \"$Found\" && cp \"$Found\" " ++ q(Target) ++
         " && chmod +x " ++ q(Target) ++ " && ln -sfn " ++ q(Target) ++ " " ++ q(filename:join(Bin, Binary)) ++ " && rm -f " ++ q(Tmp),
   case os:cmd(Cmd) of
