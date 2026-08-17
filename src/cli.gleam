@@ -89,20 +89,6 @@ fn install(name: String) {
   }
 }
 
-fn build_formula(steps: List(formula.BuildStep)) {
-  case steps {
-    [formula.Buck2(target), ..] ->
-      case buck2.build(target) {
-        Ok(output) ->
-          io.println("Buck2 build succeeded for " <> target <> "\n" <> output)
-        Error(buck2.Failed(message)) ->
-          io.println("error: Buck2 build failed: " <> message)
-        Error(buck2.Unavailable) -> io.println("error: Buck2 is not installed")
-      }
-    _ -> io.println("error: source formula has no supported build backend")
-  }
-}
-
 fn uninstall(name: String) {
   case catalog.find(name) {
     Ok(_) -> io.println("Not installed: " <> name)
