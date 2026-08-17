@@ -17,7 +17,7 @@ install(Url0, Checksum0, Name0, Version0, Binary0) ->
         " && chmod +x " ++ q(Target) ++ " && ln -sfn " ++ q(Target) ++ " " ++ q(filename:join(Bin, Binary)) ++ " && rm -f " ++ q(Tmp),
   case os:cmd(Cmd) of
     [] -> {ok, unicode:characters_to_binary(filename:join(Bin, Binary))};
-    Output -> {error, Output}
+    Output -> {error, unicode:characters_to_binary(Output)}
   end.
 q(S) -> "'" ++ string:replace(S, "'", "'\"'\"'", all) ++ "'".
 
