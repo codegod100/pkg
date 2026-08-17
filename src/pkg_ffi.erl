@@ -66,7 +66,10 @@ buck2_install(Workspace0, Target0, Name0, Version0, Binary0) ->
       case Paths of
         [Source0|_] -> Source = filename:join(AbsWorkspace, Source0), Destination = filename:join([Cellar, "bin", Binary]),
           _ = filelib:ensure_dir(filename:join(filename:dirname(Destination), "x")), _ = file:delete(Destination), _ = file:del_dir_r(Destination),
-          {ok, _} = file:copy(Source, Destination), ok = file:change_mode(Destination, 8#755), ok = filelib:ensure_dir(filename:join(Bin, "x")),
+          case file:copy(Source, Destination) of
+            {ok, _} -> ok;
+            {error, Reason} -> throw({install_error, Reason})
+          end, _ = file:change_mode(Destination, 8#755), _ = filelib:ensure_dir(filename:join(Bin, "x")),
           Link = filename:join(Bin, Binary), _ = file:delete(Link), _ = file:del_dir_r(Link),
           case file:make_symlink(Destination, Link) of
             ok -> {ok, unicode:characters_to_binary(Link)};
