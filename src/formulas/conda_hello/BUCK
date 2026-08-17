@@ -1,5 +1,5 @@
 genrule(
     name = "hello",
     out = "hello",
-    cmd = "pixi install --manifest-path $SRCDIR/pixi.toml && cp $SRCDIR/.pixi/envs/default/bin/hello $OUT && chmod +x $OUT",
+    cmd = "pixi install --manifest-path /home/nandi/code/pkg/src/formulas/conda_hello/pixi.toml && cp /home/nandi/code/pkg/src/formulas/conda_hello/.pixi/envs/default/bin/hello $OUT && chmod +x $OUT",
 )
