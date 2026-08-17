@@ -10,7 +10,7 @@ install(Url0, Checksum0, Name0, Version0, Binary0) ->
   ok = filelib:ensure_dir(filename:join(Cellar, "x")),
   ok = filelib:ensure_dir(filename:join(Bin, "x")),
   Cmd = "curl --fail --location --silent --show-error --proto '=https' --tlsv1.2 -o " ++ q(Tmp) ++ " " ++ q(Url) ++
-        " && test "$(sha256sum " ++ q(Tmp) ++ " | awk '{print $1}')" = " ++ q(Checksum) ++
+        " && test \"$(sha256sum " ++ q(Tmp) ++ " | awk '{print $1}')\" = " ++ q(Checksum) ++
         " && tar -xzf " ++ q(Tmp) ++ " -C " ++ q(Cellar) ++ " --strip-components=1 && mkdir -p " ++ q(filename:join(Cellar, "bin")) ++
         " && mv " ++ q(filename:join(Cellar, Binary)) ++ " " ++ q(filename:join([Cellar, "bin", Binary])) ++
         " && ln -sfn " ++ q(filename:join([Cellar, "bin", Binary])) ++ " " ++ q(filename:join(Bin, Binary)) ++ " && rm -f " ++ q(Tmp),
