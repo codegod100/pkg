@@ -1,0 +1,6 @@
+[
+  {"name":"ripgrep","version":"14.1.0","description":"Fast recursive search tool","homepage":"https://github.com/BurntSushi/ripgrep"},
+  {"name":"fd","version":"10.2.0","description":"Simple, fast alternative to find","homepage":"https://github.com/sharkdp/fd"},
+  {"name":"jq","version":"1.7.1","description":"Command-line JSON processor","homepage":"https://jqlang.github.io/jq/"},
+  {"name":"bat","version":"0.25.0","description":"A cat clone with wings","homepage":"https://github.com/sharkdp/bat"}
+]

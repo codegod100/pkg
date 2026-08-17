@@ -1,0 +1,7 @@
+# pixi environments
+.pixi/*
+!.pixi/config.toml
+
+# Generated executable (build with `pixi run build`)
+/pkg
+/build/

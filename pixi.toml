@@ -1,0 +1,13 @@
+[workspace]
+channels = ["conda-forge"]
+name = "pkg"
+platforms = ["linux-64"]
+version = "0.1.0"
+
+[tasks]
+build = "gleam export escript"
+run = "gleam run"
+
+[dependencies]
+gleam = ">=1.18.1,<2"
+erlang = ">=29.0.5,<30"
