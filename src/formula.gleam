@@ -7,6 +7,7 @@ pub type BuildStep {
   Run(command: String, arguments: List(String))
   Install(source: String, destination: String)
   Buck2(target: String)
+  Buck2Workspace(workspace: String, target: String)
 }
 
 pub type Formula {
