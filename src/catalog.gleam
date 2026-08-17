@@ -1,9 +1,9 @@
 import formula
-import formulas/bat
-import formulas/fd
-import formulas/hello
-import formulas/jq
-import formulas/ripgrep
+import formulas/bat/formula as bat_formula
+import formulas/fd/formula as fd_formula
+import formulas/hello/formula as hello_formula
+import formulas/jq/formula as jq_formula
+import formulas/ripgrep/formula as ripgrep_formula
 import gleam/list
 import gleam/string
 
@@ -12,11 +12,11 @@ pub type Formula =
 
 pub fn catalogue() -> List(Formula) {
   [
-    ripgrep.formula(),
-    fd.formula(),
-    jq.formula(),
-    hello.formula(),
-    bat.formula(),
+    ripgrep_formula.formula(),
+    fd_formula.formula(),
+    jq_formula.formula(),
+    hello_formula.formula(),
+    bat_formula.formula(),
   ]
 }
 

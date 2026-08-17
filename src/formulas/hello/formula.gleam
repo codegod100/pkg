@@ -8,6 +8,6 @@ pub fn formula() -> formula.Formula {
     "https://github.com/codegod100/pkg",
     formula.FromSource("local://hello", "source"),
     ["pkg-hello"],
-    [formula.Buck2Workspace("formulas/hello", "//:hello")],
+    [formula.Buck2Workspace("src/formulas/hello", "//:hello")],
   )
 }
