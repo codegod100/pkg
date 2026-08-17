@@ -67,8 +67,12 @@ buck2_install(Workspace0, Target0, Name0, Version0, Binary0) ->
         [Source0|_] -> Source = filename:join(AbsWorkspace, Source0), Destination = filename:join([Cellar, "bin", Binary]),
           ok = filelib:ensure_dir(filename:join(Destination, "x")), _ = file:del_dir_r(Destination),
           {ok, _} = file:copy(Source, Destination), ok = file:change_mode(Destination, 8#755), ok = filelib:ensure_dir(filename:join(Bin, "x")),
-          _ = file:delete(filename:join(Bin, Binary)), ok = file:make_symlink(Destination, filename:join(Bin, Binary)),
-          {ok, unicode:characters_to_binary(filename:join(Bin, Binary))};
+          Link = filename:join(Bin, Binary), _ = file:delete(Link), _ = file:del_dir_r(Link),
+          case file:make_symlink(Destination, Link) of
+            ok -> {ok, unicode:characters_to_binary(Link)};
+            {error, Eexist} -> {ok, unicode:characters_to_binary(Link)};
+            {error, Reason} -> {error, unicode:characters_to_binary(io_lib:format("~p", [Reason]))}
+          end;
         [] -> {error, <<"Buck2 succeeded but no output artifact was found">>}
       end
   end.
