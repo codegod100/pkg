@@ -73,3 +73,6 @@ buck2_install(Workspace0, Target0, Name0, Version0, Binary0) ->
       end
   end.
 output_path(Line) -> case string:split(Line, " ", all) of [_, Path] -> [Path]; _ -> [] end.
+
+find_config([]) -> "";
+find_config([Path|Rest]) -> case filelib:is_file(Path) of true -> Path; false -> find_config(Rest) end.
