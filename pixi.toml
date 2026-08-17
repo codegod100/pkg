@@ -5,7 +5,7 @@ platforms = ["linux-64"]
 version = "0.1.0"
 
 [tasks]
-build = "gleam export escript"
+build = "rm -rf build; find src/formulas -type d -name buck-out -prune -exec rm -rf {} +; gleam export escript"
 run = "gleam run"
 
 [dependencies]

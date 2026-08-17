@@ -74,7 +74,7 @@ buck2_install(Workspace0, Target0, Name0, Version0, Binary0) ->
           case file:make_symlink(Destination, Link) of
             ok -> {ok, unicode:characters_to_binary(Link)};
             {error, Eexist} -> {ok, unicode:characters_to_binary(Link)};
-            {error, Reason} -> {error, unicode:characters_to_binary(io_lib:format("~p", [Reason]))}
+            {error, CopyReason} -> {error, unicode:characters_to_binary(io_lib:format("~p", [CopyReason]))}
           end;
         [] -> {error, <<"Buck2 succeeded but no output artifact was found">>}
       end
