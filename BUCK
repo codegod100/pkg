@@ -1,6 +1,6 @@
 genrule(
     name = "hello",
-    srcs = ["examples/hello.sh"],
+    srcs = ["examples/hello.zig"],
     out = "pkg-hello",
-    cmd = "cp $SRCDIR/examples/hello.sh $OUT && chmod +x $OUT",
+    cmd = "zig build-exe $SRCDIR/examples/hello.zig -O ReleaseSmall -femit-bin=$OUT",
 )

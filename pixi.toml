@@ -11,3 +11,4 @@ run = "gleam run"
 [dependencies]
 gleam = ">=1.18.1,<2"
 erlang = ">=29.0.5,<30"
+zig = ">=0.16.0,<0.17"
