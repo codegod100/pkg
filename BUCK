@@ -1,5 +1,6 @@
 genrule(
-    name = "bat",
-    out = "bat-build.txt",
-    cmd = "echo pkg-buck2-formula-bat > $OUT",
+    name = "hello",
+    srcs = ["examples/hello.sh"],
+    out = "pkg-hello",
+    cmd = "cp $SRCDIR/examples/hello.sh $OUT && chmod +x $OUT",
 )

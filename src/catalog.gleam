@@ -1,6 +1,7 @@
 import formula
 import formulas/bat
 import formulas/fd
+import formulas/hello
 import formulas/jq
 import formulas/ripgrep
 import gleam/list
@@ -14,6 +15,7 @@ pub fn catalogue() -> List(Formula) {
     ripgrep.formula(),
     fd.formula(),
     jq.formula(),
+    hello.formula(),
     bat.formula(),
   ]
 }
