@@ -7,6 +7,7 @@ pub type InstallError {
 @external(erlang, "pkg_ffi", "install")
 fn install_ffi(
   url: String,
+  sha256: String,
   name: String,
   version: String,
   binary: String,
@@ -22,7 +23,7 @@ pub fn install(
   case sha256 {
     "" -> Error(MissingChecksum)
     _ ->
-      case install_ffi(url, name, version, binary) {
+      case install_ffi(url, sha256, name, version, binary) {
         Ok(path) -> Ok(path)
         Error(message) -> Error(Failed(message))
       }
