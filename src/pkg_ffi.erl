@@ -27,10 +27,10 @@ buck2_build(Target0) ->
   case os:find_executable("buck2") of
     false -> {error, "buck2 was not found on PATH"};
     _ ->
-      Command = "buck2 build " ++ q(Target) ++ " --show-output 2>&1",
+      Command = "buck2 kill >/dev/null 2>&1 || true; buck2 build " ++ q(Target) ++ " --show-output 2>&1",
       Output = os:cmd(Command),
-      case string:find(Output, "FAILED") of
-        nomatch -> {ok, unicode:characters_to_binary(Output)};
-        _ -> {error, unicode:characters_to_binary(Output)}
+      case string:find(Output, "BUILD SUCCEEDED") of
+        nomatch -> {error, unicode:characters_to_binary(Output)};
+        _ -> {ok, unicode:characters_to_binary(Output)}
       end
   end.
