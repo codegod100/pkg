@@ -1,5 +1,5 @@
 -module(pkg_ffi).
--export([install/5, buck2_build/1, buck2_install/4]).
+-export([install/5, buck2_build/1, buck2_install/5]).
 install(Url0, Checksum0, Name0, Version0, Binary0) ->
   Url = unicode:characters_to_list(Url0), Checksum = unicode:characters_to_list(Checksum0), Name = unicode:characters_to_list(Name0), Version = unicode:characters_to_list(Version0), Binary = unicode:characters_to_list(Binary0),
   Home = case os:getenv("HOME") of false -> "."; Value -> Value end,
