@@ -1,5 +1,5 @@
 -module(pkg_ffi).
--export([install/5]).
+-export([install/5, buck2_build/1]).
 install(Url0, Checksum0, Name0, Version0, Binary0) ->
   Url = unicode:characters_to_list(Url0), Checksum = unicode:characters_to_list(Checksum0), Name = unicode:characters_to_list(Name0), Version = unicode:characters_to_list(Version0), Binary = unicode:characters_to_list(Binary0),
   Home = case os:getenv("HOME") of false -> "."; Value -> Value end,
@@ -20,3 +20,17 @@ install(Url0, Checksum0, Name0, Version0, Binary0) ->
     Output -> {error, Output}
   end.
 q(S) -> "'" ++ string:replace(S, "'", "'\"'\"'", all) ++ "'".
+
+
+buck2_build(Target0) ->
+  Target = unicode:characters_to_list(Target0),
+  case os:find_executable("buck2") of
+    false -> {error, "buck2 was not found on PATH"};
+    _ ->
+      Command = "buck2 build " ++ q(Target) ++ " --show-output 2>&1",
+      Output = os:cmd(Command),
+      case string:find(Output, "FAILED") of
+        nomatch -> {ok, unicode:characters_to_binary(Output)};
+        _ -> {error, unicode:characters_to_binary(Output)}
+      end
+  end.

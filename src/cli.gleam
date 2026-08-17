@@ -1,3 +1,4 @@
+import buck2
 import catalog
 import formula
 import gleam/io
@@ -82,10 +83,23 @@ fn install(name: String) {
               }
             [] -> io.println("error: formula declares no binaries")
           }
-        formula.FromSource(_, _) ->
-          io.println("error: source builds are not implemented yet")
+        formula.FromSource(_, _) -> build_formula(item.build)
       }
     Error(_) -> io.println("error: formula not found: " <> name)
+  }
+}
+
+fn build_formula(steps: List(formula.BuildStep)) {
+  case steps {
+    [formula.Buck2(target), ..] ->
+      case buck2.build(target) {
+        Ok(output) ->
+          io.println("Buck2 build succeeded for " <> target <> "\n" <> output)
+        Error(buck2.Failed(message)) ->
+          io.println("error: Buck2 build failed: " <> message)
+        Error(buck2.Unavailable) -> io.println("error: Buck2 is not installed")
+      }
+    _ -> io.println("error: source formula has no supported build backend")
   }
 }
 
