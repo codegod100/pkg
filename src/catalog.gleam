@@ -1,5 +1,6 @@
 import formula
 import formulas/bat/formula as bat_formula
+import formulas/conda_hello/formula as conda_hello_formula
 import formulas/fd/formula as fd_formula
 import formulas/hello/formula as hello_formula
 import formulas/jq/formula as jq_formula
@@ -17,6 +18,7 @@ pub fn catalogue() -> List(Formula) {
     jq_formula.formula(),
     hello_formula.formula(),
     bat_formula.formula(),
+    conda_hello_formula.formula(),
   ]
 }
 

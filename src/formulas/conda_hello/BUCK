@@ -1,0 +1,5 @@
+genrule(
+    name = "hello",
+    out = "hello",
+    cmd = "pixi install --manifest-path $SRCDIR/pixi.toml && cp $SRCDIR/.pixi/envs/default/bin/hello $OUT && chmod +x $OUT",
+)
