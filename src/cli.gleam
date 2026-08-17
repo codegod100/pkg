@@ -84,7 +84,22 @@ fn install(name: String) {
             [] -> io.println("error: formula declares no binaries")
           }
         formula.FromSource(_, _) ->
-          io.println("error: source formula requires Buck2 build step")
+          case item.build {
+            [formula.Buck2(target), ..] ->
+              case item.binaries {
+                [binary, ..] ->
+                  case buck2.install(target, item.name, item.version, binary) {
+                    Ok(path) ->
+                      io.println("Installed " <> item.name <> " to " <> path)
+                    Error(buck2.Failed(message)) ->
+                      io.println("error: Buck2 install failed: " <> message)
+                    Error(buck2.Unavailable) ->
+                      io.println("error: Buck2 is not installed")
+                  }
+                [] -> io.println("error: formula declares no binaries")
+              }
+            _ -> io.println("error: source formula requires Buck2 build step")
+          }
       }
     Error(_) -> io.println("error: formula not found: " <> name)
   }

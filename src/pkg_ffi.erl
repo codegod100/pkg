@@ -59,9 +59,9 @@ buck2_install(Target0, Name0, Version0, Binary0) ->
       case Paths of
         [Source|_] ->
           Destination = filename:join([Cellar, "bin", Binary]),
-          ok = filelib:ensure_dir(filename:join(Destination, "x")),
+          ok = filelib:ensure_dir(filename:join(filename:dirname(Destination), "x")),
           ok = file:del_dir_r(filename:join([Cellar, "bin"])),
-          ok = filelib:ensure_dir(filename:join(Destination, "x")),
+          ok = filelib:ensure_dir(filename:join(filename:dirname(Destination), "x")),
           case file:copy(Source, Destination) of
             {ok, _} -> ok = file:change_mode(Destination, 8#755), ok = filelib:ensure_dir(filename:join(Bin, "x")),
               _ = file:make_symlink(Destination, filename:join(Bin, Binary)),
