@@ -1,5 +1,5 @@
 -module(pkg_ffi).
--export([install/5, buck2_build/1, buck2_install/5]).
+-export([install/5, try_install/4, buck2_build/1, buck2_install/5]).
 install(Url0, Checksum0, Name0, Version0, Binary0) ->
   Url = unicode:characters_to_list(Url0), Checksum = unicode:characters_to_list(Checksum0), Name = unicode:characters_to_list(Name0), Version = unicode:characters_to_list(Version0), Binary = unicode:characters_to_list(Binary0),
   Home = case os:getenv("HOME") of false -> "."; Value -> Value end,
@@ -20,6 +20,29 @@ install(Url0, Checksum0, Name0, Version0, Binary0) ->
     Output -> {error, unicode:characters_to_binary(Output)}
   end.
 q(S) -> "'" ++ string:replace(S, "'", "'\"'\"'", all) ++ "'".
+
+
+%% Download a raw binary from a URL without checksum verification.
+%% Used for Tangled artifacts (content-addressed blobs published by CI) where
+%% the CID is not known ahead of time.  Returns {error, Output} when the URL
+%% is unreachable or returns a non-2xx status so the caller can fall back to a
+%% source build.
+try_install(Url0, Name0, Version0, Binary0) ->
+  Url = unicode:characters_to_list(Url0), Name = unicode:characters_to_list(Name0), Version = unicode:characters_to_list(Version0), Binary = unicode:characters_to_list(Binary0),
+  Home = case os:getenv("HOME") of false -> "."; Value -> Value end,
+  Root = filename:join([Home, ".local", "share", "pkg"]),
+  Cellar = filename:join([Root, "Cellar", Name, Version]),
+  Bin = filename:join([Home, ".local", "bin"]),
+  Target = filename:join([Cellar, "bin", Binary]),
+  ok = filelib:ensure_dir(filename:join(filename:dirname(Target), "x")),
+  ok = filelib:ensure_dir(filename:join(Bin, "x")),
+  Cmd = "curl --fail --location --silent --show-error --proto '=https' --tlsv1.2 -o " ++ q(Target) ++ " " ++ q(Url) ++
+        " && chmod +x " ++ q(Target) ++
+        " && ln -sfn " ++ q(Target) ++ " " ++ q(filename:join(Bin, Binary)),
+  case os:cmd(Cmd) of
+    [] -> {ok, unicode:characters_to_binary(filename:join(Bin, Binary))};
+    Output -> {error, unicode:characters_to_binary(Output)}
+  end.
 
 
 buck2_build(Target0) ->

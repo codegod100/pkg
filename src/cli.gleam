@@ -123,6 +123,34 @@ fn install(name: String) {
               }
             _ -> io.println("error: source formula requires Buck2 build step")
           }
+        formula.TangledOrBuck2(url, target) ->
+          case item.binaries {
+            [binary, ..] ->
+              case
+                installer.try_install(url, item.name, item.version, binary)
+              {
+                Ok(path) ->
+                  io.println("Installed " <> item.name <> " to " <> path)
+                Error(_) -> {
+                  io.println(
+                    "No prebuilt binary on Tangled — building from source with Buck2…",
+                  )
+                  case
+                    buck2.install(".", target, item.name, item.version, binary)
+                  {
+                    Ok(path) ->
+                      io.println("Installed " <> item.name <> " to " <> path)
+                    Error(buck2.Failed(message)) ->
+                      io.println("error: Buck2 build failed: " <> message)
+                    Error(buck2.Unavailable) ->
+                      io.println(
+                        "error: buck2 not installed — see https://buck2.build",
+                      )
+                  }
+                }
+              }
+            [] -> io.println("error: formula declares no binaries")
+          }
       }
     Error(_) -> io.println("error: formula not found: " <> name)
   }

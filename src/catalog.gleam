@@ -5,6 +5,7 @@ import formulas/fd/formula as fd_formula
 import formulas/hello/formula as hello_formula
 import formulas/jq/formula as jq_formula
 import formulas/ripgrep/formula as ripgrep_formula
+import formulas/sleek/formula as sleek_formula
 import gleam/list
 import gleam/string
 
@@ -19,6 +20,7 @@ pub fn catalogue() -> List(Formula) {
     hello_formula.formula(),
     bat_formula.formula(),
     conda_hello_formula.formula(),
+    sleek_formula.formula(),
   ]
 }
 
